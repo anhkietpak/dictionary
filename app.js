@@ -12,20 +12,23 @@ nano.db.list(function(err, body) {
 
 app.get('/', function(request, response) {
 	var listOfFruits = ["test", "another"];
-	fruits.list(function(err, body) {
-		if (!err) {
-			body.rows.forEach(function(doc) {
-				fruits.get(doc.id, function(err, body) {
-					if (body.name) {
-						console.log(body.name);
-						listOfFruits.push(body.name);
-						console.log(listOfFruits);
-					};
+	var returnFruits = function(data, cb) {
+		data.list(function(err, body) {
+			if (!err) {
+				body.rows.forEach(function(doc) {
+					data.get(doc.id, function(err, body) {
+						if (body.name) {
+							console.log(body.name);
+							listOfFruits.push(body.name);
+							console.log(listOfFruits);
+						};
+					});
 				});
-			});
-		};
-	});
-	response.send(listOfFruits);
+			};
+		});
+		cb(listOfFruits);
+	};
+	returnFruits(fruits, cb => response.send(cb));
 });
 
 
